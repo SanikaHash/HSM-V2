@@ -1,0 +1,75 @@
+<!-- sidebar-navbar-component.html -->
+<div class="Page">
+  <div class="navbar">
+    <div class="logo">
+      <h2>My Brand</h2>
+    </div>
+    <div class="search-bar">
+      <input type="text" placeholder="Search...">
+      <button><i class="fa fa-search"></i></button>
+    </div>
+  </div>
+
+  <!-- Main content area -->
+  <div class="sidebar-main-content">
+    <div class="sidebar">
+      <div class="sidebar-options">
+        <a (click)="filterTicketsForLast7Days()">Tickets for last 7 days</a>
+        <a>Tickets assigned to Me</a>
+        <a (click)="filterTicketsNew()">Tickets New</a>
+        <a>Tickets in Progress</a>
+        <a>Tickets Overdue</a>
+      </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="main-content">
+      <!-- Your main content goes here -->
+      <div class="table-container">
+        <table class="table">
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>Req-Date</th>
+            <th>Service-Type</th>
+            <th>Assigned-To</th>
+            <th>Availed-Date</th>
+            <th>Number of days Open</th>
+            <th>Expected Time to close</th>
+            <th>Severity</th>
+            <th>Status</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let ticket of displayData">
+            <td (click)="openTicketDetails(ticket)"  class="pointer">{{ ticket.requestId }}</td>
+            <td>{{ formatDate(ticket.requestDate) }}</td>
+            <td>{{ ticket.serviceType }}</td>
+            <td>{{ ticket.assignedTo }}</td>
+            <td>{{ ticket.availedDate }}</td>
+            <td>{{ ticket.daysOpen }}</td>
+            <td>{{ ticket.expectedTimeToClose }}</td>
+            <td>{{ ticket.severity }}</td>
+            <td>{{ ticket.status }}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- Ticket details form -->
+      <app-ticket-details-form
+        *ngIf="showForm"
+        [ticketDetails]="selectedTicket"
+        [ticketId]="selectedTicket?.requestId"
+        [requestDate]="selectedTicket?.requestDate"
+        [serviceType]="selectedTicket?.serviceType"
+        [assignedTo]="selectedTicket?.assignedTo"
+        [availedDate]="selectedTicket?.availedDate"
+        [daysOpen]="selectedTicket?.daysOpen"
+        [expectedTimeToClose]="selectedTicket?.expectedTimeToClose"
+        [severity]="selectedTicket?.severity"
+        [status]="selectedTicket?.status"
+        (formSubmitted)="addticketdetails($event)">
+      </app-ticket-details-form>
+    </div>
+  </div>
+</div>
