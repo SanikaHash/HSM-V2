@@ -25,7 +25,7 @@ interface Ticket {
   styleUrls: ['./servicehandler.component.css']
 })
 export class ServicehandlerComponent implements OnInit {
-  displayData: any;
+  displayData: Ticket[]=[];
   showForm: boolean = false;
   selectedTicket: any;
   loading: boolean = false;
@@ -33,54 +33,55 @@ export class ServicehandlerComponent implements OnInit {
   constructor(private shService: ShService, private http: HttpClient, private router: Router) { }
 
   ngOnInit(): void {
-    this.getDisplayData().subscribe(data => {
-      this.displayData = data;
-      console.log(this.displayData);
-      this.fetchDisplayData();
-    });
+    // this.getDisplayData().subscribe(data => {
+    //   this.displayData = data;
+    // });
+    this.fetchDisplayData();
   }
 
-  getDisplayData(): Observable<any> {
-    return this.http.get<any>('http://localhost:3000/displaydata').pipe(
-      map((data: any[]) => {
-        data.sort((a, b) => new Date(b.requestDate).getTime() - new Date(a.requestDate).getTime());
-        return data.map((item, index) => ({
-          ...item,
-          requestId: index + 1,
-          requestDate: this.formatDate(item.requestDate)
-        }));
-      })
-    );
+  getDisplayData(): Observable<Ticket[]> {
+    return this.http.get<Ticket[]>('http://localhost:3000/displaydata');
   }
 
   // Helper method to format date
-  formatDate(dateString: string): string {
-    const options: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false,
-      timeZone: 'Asia/Kolkata'
-    };
-    return new Date(dateString).toLocaleString('en-IN', options);
-  }
+  // formatDate(dateString: string): string {
+  //   const date = new Date(dateString);
+  //   if (isNaN(date.getTime())) {
+  //     console.error('Invalid Date:', dateString);
+  //     return 'Invalid Date';
+  //   }
+  //   const options: Intl.DateTimeFormatOptions = {
+  //     year: 'numeric',
+  //     month: '2-digit',
+  //     day: '2-digit',
+  //     hour: '2-digit',
+  //     minute: '2-digit',
+  //     second: '2-digit',
+  //     hour12: false,
+  //     timeZone: 'Asia/Kolkata'
+  //   };
+  //   return date.toLocaleString('en-IN', options).replace(/-/g, '/').replace(',', '');
+  // }
 
   fetchDisplayData(): void {
-    this.loading = true; // Set loading flag to true
-    this.shService.getDisplayData().subscribe(
+    this.loading = true;
+    this.getDisplayData().subscribe(
       data => {
-        this.displayData = data;
-        this.loading = false; // Set loading flag to false when data is loaded
+        this.displayData = this.sortByDateDesc(data);
+        this.loading = false;
       },
       error => {
         console.error('Error fetching display data:', error);
-        this.loading = false; // Set loading flag to false in case of error
+        this.loading = false;
       }
     );
   }
+
+  // Sorting method to sort tickets by requestDate in descending order
+  sortByDateDesc(data: Ticket[]): Ticket[] {
+    return data.sort((a, b) => new Date(b.requestDate).getTime() - new Date(a.requestDate).getTime());
+  }
+
 
   openTicketDetails(ticket: any): void {
     this.selectedTicket = ticket;
@@ -92,7 +93,7 @@ export class ServicehandlerComponent implements OnInit {
   }
 
   addticketdetails(formData: any): void {
-    this.shService.addticketdetails(formData.ticketId, formData.formData).subscribe(() => {
+    this.http.post('/addticketdetails', formData).subscribe(() => {
       this.fetchDisplayData();
       this.closeForm();
     });
@@ -124,6 +125,6 @@ export class ServicehandlerComponent implements OnInit {
   filterTicketsNew() {
     console.log('Filtering new tickets');
     // Filter tickets where viewed is false
-    this.displayData = this.displayData.filter((ticket: Ticket) => !ticket.viewed);
+    this.displayData = this.displayData.filter(ticket => !ticket.viewed);
   }
 }
