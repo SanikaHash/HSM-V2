@@ -68,6 +68,7 @@ export class ServicehandlerComponent implements OnInit {
     this.getDisplayData().subscribe(
       data => {
         this.displayData = this.sortByDateDesc(data);
+        this.assignUniqueRequestIds();
         this.loading = false;
       },
       error => {
@@ -82,6 +83,14 @@ export class ServicehandlerComponent implements OnInit {
     return data.sort((a, b) => new Date(b.requestDate).getTime() - new Date(a.requestDate).getTime());
   }
 
+  // Method to generate and assign unique request IDs
+  assignUniqueRequestIds(): void {
+    const sortedAsc = [...this.displayData].sort((a, b) => new Date(a.requestDate).getTime() - new Date(b.requestDate).getTime());
+    sortedAsc.forEach((ticket, index) => {
+      ticket.requestId = `SR-${(index + 1).toString().padStart(2, '0')}`;
+    });
+  }
+
 
   openTicketDetails(ticket: any): void {
     this.selectedTicket = ticket;
@@ -93,10 +102,23 @@ export class ServicehandlerComponent implements OnInit {
   }
 
   addticketdetails(formData: any): void {
+    // Assign a unique request ID
+    formData.requestId = this.generateUniqueRequestId();
     this.http.post('/addticketdetails', formData).subscribe(() => {
       this.fetchDisplayData();
       this.closeForm();
     });
+  }
+
+  generateUniqueRequestId(): string {
+    const existingIds = this.displayData.map(ticket => ticket.requestId);
+    let newId: string;
+    let i = 0;
+    do {
+      i++;
+      newId = `SR-${i.toString().padStart(2, '0')}`;
+    } while (existingIds.includes(newId));
+    return newId;
   }
 
   toggleDropdown() {

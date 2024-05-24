@@ -34,13 +34,28 @@ export class TicketDetailsFormComponent implements OnInit{
     });
   }
 
+  // ngOnInit(): void {
+  //   this.route.paramMap.subscribe(params => {
+  //     this.ticketId = +params.get('id')!;
+  //     console.log('Ticket ID:', this.ticketId);
+  //     // Fetch ticket details if needed
+  //     if (this.ticketId) {
+  //       this.getTicketDetails(this.ticketId);
+  //     }
+  //   });
+  //   this.fetchBookingData('1');
+  // }
+
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
-      this.ticketId = +params.get('id')!;
-      console.log('Ticket ID:', this.ticketId);
-      // Fetch ticket details if needed
-      if (this.ticketId) {
-        this.getTicketDetails(this.ticketId);
+      const idParam = params.get('id');
+      if (idParam) {
+        this.ticketId = +idParam;
+        console.log('Ticket ID:', this.ticketId);
+        // Fetch ticket details if needed
+        if (this.ticketId) {
+          this.getTicketDetails(this.ticketId);
+        }
       }
     });
     this.fetchBookingData('1');
