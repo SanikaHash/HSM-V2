@@ -16,6 +16,7 @@ import { ServicehandlerComponent} from "./CareTaker/servicehandler/servicehandle
 import { LastsevendaysTableComponent } from './CareTaker/Tickets/lastsevendays-table/lastsevendays-table.component';
 import {DateFormatPipe} from "./pipes/date-format.pipe";
 import { TicketDetailsFormComponent } from './ticket-details-form/ticket-details-form.component';
+import { ProfileComponent } from './CareTaker/profile/profile.component';
 
 const routes: Routes = [
   // Other routes...
@@ -36,6 +37,7 @@ const routes: Routes = [
     LastsevendaysTableComponent,
     DateFormatPipe,
     TicketDetailsFormComponent,
+    ProfileComponent,
 
   ],
   imports: [

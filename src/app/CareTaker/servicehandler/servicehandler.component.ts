@@ -29,6 +29,7 @@ export class ServicehandlerComponent implements OnInit {
   showForm: boolean = false;
   selectedTicket: any;
   loading: boolean = false;
+  showProfileMenu: boolean = false;
 
   constructor(private shService: ShService, private http: HttpClient, private router: Router) { }
 
@@ -148,5 +149,20 @@ export class ServicehandlerComponent implements OnInit {
     console.log('Filtering new tickets');
     // Filter tickets where viewed is false
     this.displayData = this.displayData.filter(ticket => !ticket.viewed);
+  }
+
+  toggleProfileMenu() {
+    this.showProfileMenu = !this.showProfileMenu;
+  }
+
+  goToProfile() {
+    this.showProfileMenu = false;
+    this.router.navigate(['/profile']); // Adjust the route to your profile page
+  }
+
+  logout() {
+    this.showProfileMenu = false;
+    // Implement your logout logic here, such as clearing user session, tokens, etc.
+    this.router.navigate(['']); // Adjust the route to your login page
   }
 }
