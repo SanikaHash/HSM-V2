@@ -1,7 +1,7 @@
 <div class="container">
 <div class="ticket-details-form">
   <h2>Ticket Details for Ticket #{{ ticketId }}</h2>
-  <form (ngSubmit)="submitForm()">
+  <form (ngSubmit)="submitForm()" [formGroup]="formData">
     <div>
       <label for="reqDate">Request Date</label>
       <input id="reqDate" type="text" formControlName="reqDate" />

@@ -11,7 +11,7 @@ export class TicketService {
   constructor(private http: HttpClient) {
   }
 
-  addticketdetails(ticketId: number, formData: any) {
+  addticketdetails(ticketId: string, formData: any) {
     // Modify the request body to match the expected format on the server side
     const requestData = {
       ticketId: ticketId,
@@ -25,7 +25,7 @@ export class TicketService {
     return this.http.post<any>(`${this.baseUrl}/addticketdetails`, requestData);
   }
 
-  getTicketDetails(ticketId: number): Observable<any> {
+    getTicketDetails(ticketId: string): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/getTicketDetails/${ticketId}`);
   }
 

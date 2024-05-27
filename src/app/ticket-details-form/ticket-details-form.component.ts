@@ -9,8 +9,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./ticket-details-form.component.css']
 })
 export class TicketDetailsFormComponent implements OnInit{
-  @Input() ticketDetails: any;
-  @Input() ticketId!: number;
+  @Input() ticketDetails: any = {};
+  @Input() ticketId!: string;
   @Input() requestDate: string | undefined;
   @Input() serviceType: string | undefined;
   @Input() assignedTo: string | undefined;
@@ -50,7 +50,7 @@ export class TicketDetailsFormComponent implements OnInit{
     this.route.paramMap.subscribe(params => {
       const idParam = params.get('id');
       if (idParam) {
-        this.ticketId = +idParam;
+        this.ticketId = `${idParam.padStart(2, '0')}`; // Ensure ticketId format is correct
         console.log('Ticket ID:', this.ticketId);
         // Fetch ticket details if needed
         if (this.ticketId) {
@@ -73,7 +73,7 @@ export class TicketDetailsFormComponent implements OnInit{
   }
 
 
-  getTicketDetails(ticketId: number): void {
+  getTicketDetails(ticketId: string): void {
     this.ticketService.getTicketDetails(ticketId).subscribe(data => {
       this.ticketDetails = data;
     });
