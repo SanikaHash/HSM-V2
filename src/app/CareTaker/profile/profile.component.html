@@ -1,13 +1,12 @@
 <div class="profile-container">
   <div class="profile-header">
-    <img src="{{ userProfile.profilePicture }}" alt="Profile Picture" class="profile-picture">
     <h2>{{ userProfile.name }}</h2>
     <p>{{ userProfile.email }}</p>
   </div>
 
   <div class="profile-details">
     <h3>Profile Details</h3>
-    <p><strong>Username:</strong> {{ userProfile.username }}</p>
+    <p><strong>Username:</strong> {{ userProfile.name }}</p>
     <p><strong>Phone:</strong> {{ userProfile.phone }}</p>
     <p><strong>Address:</strong> {{ userProfile.address }}</p>
     <p><strong>Bio:</strong> {{ userProfile.bio }}</p>

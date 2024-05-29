@@ -6,6 +6,15 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ProfileService {
+  private apiUrl = 'http://localhost:3000/api/profile';
 
-  constructor() { }
+  constructor(private http:HttpClient) { }
+
+  getProfile(email: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}?email=${email}`);
+  }
+
+  updateProfile(profileData: any): Observable<any> {
+    return this.http.put<any>(this.apiUrl, profileData);
+  }
 }
