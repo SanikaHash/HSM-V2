@@ -25,11 +25,27 @@ export class TicketService {
     return this.http.post<any>(`${this.baseUrl}/addticketdetails`, requestData);
   }
 
+  updateTicketDetails(ticketId: number, formData: any): Observable<any> {
+    const requestData = {
+      ticketId,
+      assignedTo: formData.assignedTo,
+      availedDate: formData.availedDate,
+      expectedTimeToClose: formData.expectedTimeToClose,
+      severity: formData.severity,
+      status: formData.status
+    };
+    return this.http.put<any>(`${this.baseUrl}/updateticketdetails/${ticketId}`, requestData);
+  }
+
   getTicketDetails(ticketId: number): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/getTicketDetails/${ticketId}`);
   }
 
   getBookingData(bookingId: string): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/api/bookservice/${bookingId}`);
+  }
+
+  getAllTickets(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/getAllTickets`);
   }
 }

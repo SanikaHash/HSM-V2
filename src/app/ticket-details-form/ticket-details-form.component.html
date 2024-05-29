@@ -1,20 +1,14 @@
 <div class="container">
 <div class="ticket-details-form">
   <h2>Ticket Details for Ticket #{{ ticketId }}</h2>
-  <form (ngSubmit)="submitForm()">
+  <form  (ngSubmit)="submitForm()">
     <div>
-      <label for="reqDate">Request Date</label>
-      <input id="reqDate" type="text" formControlName="reqDate" />
-      <div *ngIf="formData.controls['reqDate'].invalid && formData.controls['reqDate'].touched">
-        Request Date is required
-      </div>
+      <label for="reqDate">Request Date:</label>
+      <input id="reqDate" formControlName="reqDate" type="text">
     </div>
     <div>
-      <label for="serviceType">Service Type</label>
-      <input id="serviceType" type="text" formControlName="serviceType" />
-      <div *ngIf="formData.controls['serviceType'].invalid && formData.controls['serviceType'].touched">
-        Service Type is required
-      </div>
+      <label for="serviceType">Service Type:</label>
+      <input id="serviceType" formControlName="serviceType" type="text">
     </div>
     <div class="form-group">
       <label for="daysOpen">Number of days Open</label>
@@ -41,13 +35,16 @@
       <label for="status">Status</label>
       <input type="text" id="status" name="status" [(ngModel)]="ticketDetails.status">
     </div>
-    <div class="form-group" *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]">
-      <label for="dummy-{{i}}">Dummy-{{i}}</label>
-      <input type="text" id="dummy-{{i}}" formControlName="dummy-{{i}}" />
-    </div>
-    <button type="submit">Submit</button>
+<!--    <div class="form-group" *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]">-->
+<!--      <label for="dummy-{{i}}">Dummy-{{i}}</label>-->
+<!--      <input type="text" id="dummy-{{i}}" formControlName="dummy-{{i}}" />-->
+<!--    </div>-->
+    <button *ngIf="!submittedSuccessfully && isFirstSubmission" type="submit">Submit</button>
+    <button *ngIf="submittedSuccessfully || !isFirstSubmission" type="button" (click)="enableEditing()">Edit</button>
+    <button *ngIf="submittedSuccessfully || !isFirstSubmission" type="submit">Submit</button>
+
   </form>
-  <div *ngIf="submittedSuccessfully && ticketDetails" class="success-message">
+  <div *ngIf="submittedSuccessfully " class="success-message">
     Data submitted successfully!
   </div>
 </div>

@@ -23,6 +23,9 @@ export class TicketDetailsFormComponent implements OnInit{
   formData: FormGroup;
 
   submittedSuccessfully: boolean = false;
+  isEditing: boolean = false;
+  isFirstSubmission: boolean = true;
+
   constructor(
     private ticketService: TicketService,
     private route: ActivatedRoute,
@@ -43,24 +46,37 @@ export class TicketDetailsFormComponent implements OnInit{
         this.getTicketDetails(this.ticketId);
       }
     });
-    this.fetchBookingData('1');
+    this.fetchBookingData(this.ticketId.toString());
+
+    if (this.ticketDetails) {
+      this.isFirstSubmission = false;
+      this.submittedSuccessfully = false;
+    }
   }
 
-  fetchBookingData(ticketId: string) {
-    this.ticketService.getBookingData(ticketId).subscribe((data) => {
-      if (data) {
-        this.formData.patchValue({
-          reqDate: data.date,
-          serviceType: data.service
-        });
+  fetchBookingData(bookingId: string): void {
+    this.ticketService.getBookingData(bookingId).subscribe(
+      data => {
+        if (data) {
+          this.formData.patchValue({
+            reqDate: data.date,
+            serviceType: data.service
+          });
+        }
+      },
+      error => {
+        console.error('Error fetching booking data:', error);
       }
-    });
+    );
   }
-
 
   getTicketDetails(ticketId: number): void {
     this.ticketService.getTicketDetails(ticketId).subscribe(data => {
       this.ticketDetails = data;
+      // if (this.ticketDetails) {
+      //   this.isFirstSubmission = false;
+      //   this.submittedSuccessfully = false;
+      // }
     });
     this.ticketDetails = {
       requestDate: this.requestDate,
@@ -78,10 +94,37 @@ export class TicketDetailsFormComponent implements OnInit{
     if (!this.ticketDetails || !this.ticketDetails.assignedTo || !this.ticketDetails.availedDate || !this.ticketDetails.expectedTimeToClose || !this.ticketDetails.severity || !this.ticketDetails.status) {
       return; // Prevent submission if form fields are empty
     }
-    this.ticketService.addticketdetails(this.ticketId, this.ticketDetails).subscribe(response => {
-      this.submittedSuccessfully = true;
-      this.formSubmitted.emit(response);
+    if (this.isEditing) {
+      this.updateTicketDetails();
+    } else {
+      // If not editing, add the ticket details
+      this.ticketService.addticketdetails(this.ticketId, this.ticketDetails).subscribe(response => {
+        this.handleSuccessfulSubmission();
+        this.getTicketDetails(this.ticketId);
+      });
+    }
+  }
+
+  enableEditing(): void {
+    this.isEditing = true;
+  }
+
+  updateTicketDetails(): void {
+    this.ticketService.updateTicketDetails(this.ticketId, this.ticketDetails).subscribe(response => {
+      if (response.success) {
+        this.handleSuccessfulSubmission();
+      }
+      this.isEditing = false;
       this.getTicketDetails(this.ticketId);
     });
+  }
+
+  handleSuccessfulSubmission(): void {
+    this.submittedSuccessfully = true;
+    this.formSubmitted.emit(this.ticketDetails);
+
+    setTimeout(() => {
+      this.submittedSuccessfully = false;
+    }, 5000);
   }
 }
