@@ -28,7 +28,7 @@ export class ProfileComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const email = this.route.snapshot.paramMap.get('email'); // or get email from local storage or service
+    const email = localStorage.getItem('userEmail'); // Get email from local storage
     if (email) {
       this.loadProfile(email);
     } else {

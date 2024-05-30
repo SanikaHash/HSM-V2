@@ -64,6 +64,7 @@ export class LoginComponent implements OnInit{
   private handleLoginResponse(response: any) {
     if (response.message === 'Login successful') {
       console.log('Login successful');
+      localStorage.setItem('userEmail', response.user.EmailAddress);
       this.router.navigate(['/service-handler']);
     } else {
       console.log('Login failed');
