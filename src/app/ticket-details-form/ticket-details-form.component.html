@@ -18,22 +18,37 @@
     <div class="form-group">
       <label for="assignedTo">Assigned To</label>
       <input type="text" id="assignedTo" name="assignedTo" [(ngModel)]="ticketDetails.assignedTo">
+      <div *ngIf="isFieldInvalid('assignedTo')" class="error-message">
+        Assigned To is required.
+      </div>
     </div>
     <div class="form-group">
       <label for="availedDate">Availed Date</label>
       <input type="text" id="availedDate" name="availedDate" [(ngModel)]="ticketDetails.availedDate">
+      <div *ngIf="isFieldInvalid('availedDate')" class="error-message">
+        Availed Date is required.
+      </div>
     </div>
     <div class="form-group">
       <label for="expectedTimeToClose">Expected Time to Close</label>
       <input type="text" id="expectedTimeToClose" name="expectedTimeToClose" [(ngModel)]="ticketDetails.expectedTimeToClose">
+      <div *ngIf="isFieldInvalid('expectedTimeToClose')" class="error-message">
+        Expected Time to Close is required.
+      </div>
     </div>
     <div class="form-group">
       <label for="severity">Severity</label>
       <input type="text" id="severity" name="severity" [(ngModel)]="ticketDetails.severity">
+      <div *ngIf="isFieldInvalid('severity')" class="error-message">
+        Severity is required.
+      </div>
     </div>
     <div class="form-group">
       <label for="status">Status</label>
       <input type="text" id="status" name="status" [(ngModel)]="ticketDetails.status">
+      <div *ngIf="isFieldInvalid('status')" class="error-message">
+        Status is required.
+      </div>
     </div>
 <!--    <div class="form-group" *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]">-->
 <!--      <label for="dummy-{{i}}">Dummy-{{i}}</label>-->

@@ -33,7 +33,12 @@ export class TicketDetailsFormComponent implements OnInit{
   ) {
     this.formData = this.fb.group({
       reqDate: ['', Validators.required],
-      serviceType: ['', Validators.required]
+      serviceType: ['', Validators.required],
+      assignedTo: ['', Validators.required],
+      availedDate: ['', Validators.required],
+      expectedTimeToClose: ['', Validators.required],
+      severity: ['', Validators.required],
+      status: ['', Validators.required]
     });
   }
 
@@ -127,4 +132,10 @@ export class TicketDetailsFormComponent implements OnInit{
       this.submittedSuccessfully = false;
     }, 5000);
   }
+
+  isFieldInvalid(field: string): boolean {
+    const control = this.formData.get(field);
+    return !!control && control.invalid && (control.dirty || control.touched);
+  }
+
 }
