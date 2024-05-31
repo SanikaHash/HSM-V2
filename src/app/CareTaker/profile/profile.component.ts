@@ -17,7 +17,6 @@ export class ProfileComponent implements OnInit {
   constructor(private fb: FormBuilder, private profileService: ProfileService,
               private route: ActivatedRoute) {
     this.editProfileForm = this.fb.group({
-      profilePicture: [''],
       name: [''],
       email: [''],
       username: [''],
@@ -42,12 +41,20 @@ export class ProfileComponent implements OnInit {
       data => {
         console.log('Profile data received:', data);
         this.userProfile = data;
-        this.editProfileForm.patchValue(data);
+        this.editProfileForm.patchValue({
+          name: data.Name,
+          email: data.EmailAddress,
+          username: data.Username,
+          phone: data.MobileNumber,
+          address: data.Address,
+          bio: data.Bio
+        });
       },
       error => {
         console.error('Error fetching profile', error);
       }
     );
+
   }
 
 
