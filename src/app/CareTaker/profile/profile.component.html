@@ -1,15 +1,17 @@
+<a href="/service-handler" class="back-arrow"><i class="fas fa-arrow-left"></i></a>
+
 <div class="profile-container">
   <div class="profile-header">
-    <h2>{{ userProfile.name }}</h2>
-    <p>{{ userProfile.email }}</p>
+    <h2>{{ userProfile?.Name }}</h2>
+    <p>{{ userProfile?.EmailAddress }}</p>
   </div>
 
   <div class="profile-details">
     <h3>Profile Details</h3>
-    <p><strong>Username:</strong> {{ userProfile.username }}</p>
-    <p><strong>Phone:</strong> {{ userProfile.phone }}</p>
-    <p><strong>Address:</strong> {{ userProfile.address }}</p>
-    <p><strong>Bio:</strong> {{ userProfile.bio }}</p>
+    <p><strong>Username:</strong> {{ userProfile?.Username }}</p>
+    <p><strong>Phone:</strong> {{ userProfile?.MobileNumber }}</p>
+    <p><strong>Address:</strong> {{ userProfile?.Address }}</p>
+    <p><strong>Bio:</strong> {{ userProfile?.Bio }}</p>
   </div>
 
   <button (click)="editProfile()" class="edit-button">Edit Profile</button>
