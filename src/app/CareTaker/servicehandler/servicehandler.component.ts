@@ -2,7 +2,6 @@ import { Component, OnInit} from '@angular/core';
 import { ShService} from "../services/SH-service/sh.service";
 import { HttpClient } from '@angular/common/http'; // Import HttpClient
 import {Observable} from "rxjs";
-import { map } from 'rxjs/operators'; // Import the map operator
 import { Router } from '@angular/router';
 
 // Define an interface for the ticket object
@@ -30,6 +29,9 @@ export class ServicehandlerComponent implements OnInit {
   selectedTicket: any;
   loading: boolean = false;
   showProfileMenu: boolean = false;
+  allTickets: Ticket[]= [];
+  currentPage = 1;
+  itemsPerPage = 20;
 
   constructor(private shService: ShService, private http: HttpClient, private router: Router) { }
 
@@ -38,38 +40,20 @@ export class ServicehandlerComponent implements OnInit {
     //   this.displayData = data;
     // });
     this.fetchDisplayData();
+    // this.updateDisplayData();
   }
 
-  getDisplayData(): Observable<Ticket[]> {
-    return this.http.get<Ticket[]>('http://localhost:3000/displaydata');
-  }
 
-  // Helper method to format date
-  // formatDate(dateString: string): string {
-  //   const date = new Date(dateString);
-  //   if (isNaN(date.getTime())) {
-  //     console.error('Invalid Date:', dateString);
-  //     return 'Invalid Date';
-  //   }
-  //   const options: Intl.DateTimeFormatOptions = {
-  //     year: 'numeric',
-  //     month: '2-digit',
-  //     day: '2-digit',
-  //     hour: '2-digit',
-  //     minute: '2-digit',
-  //     second: '2-digit',
-  //     hour12: false,
-  //     timeZone: 'Asia/Kolkata'
-  //   };
-  //   return date.toLocaleString('en-IN', options).replace(/-/g, '/').replace(',', '');
-  // }
+
+
 
   fetchDisplayData(): void {
     this.loading = true;
     this.getDisplayData().subscribe(
       data => {
-        this.displayData = this.sortByDateDesc(data);
+        this.allTickets = this.sortByDateDesc(data);
         this.assignUniqueRequestIds();
+        this.updateDisplayData();
         this.loading = false;
       },
       error => {
@@ -77,6 +61,36 @@ export class ServicehandlerComponent implements OnInit {
         this.loading = false;
       }
     );
+  }
+
+  updateDisplayData() {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.displayData = this.allTickets.slice(startIndex, endIndex);
+    console.log(`Displaying records from ${startIndex} to ${endIndex}`);
+  }
+
+  nextPage() {
+    if (this.currentPage < this.getTotalPages()) {
+      this.currentPage++;
+      this.updateDisplayData();
+    }
+  }
+
+  previousPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.updateDisplayData();
+    }
+  }
+
+
+  getTotalPages() {
+    return Math.ceil(this.allTickets.length / this.itemsPerPage);
+  }
+
+  getDisplayData(): Observable<Ticket[]> {
+    return this.http.get<Ticket[]>('http://localhost:3000/displaydata');
   }
 
   // Sorting method to sort tickets by requestDate in descending order
@@ -92,6 +106,46 @@ export class ServicehandlerComponent implements OnInit {
     });
   }
 
+
+
+
+
+
+  toggleDropdown() {
+    const dropdownMenu = document.getElementById("dropdownMenu");
+    if (dropdownMenu) {
+      dropdownMenu.classList.toggle("show");
+    }
+  }
+
+  //Tickets for last 7 days
+  filterTicketsForLast7Days() {
+    console.log('Filtering tickets for last 7 days');
+    const currentDate = new Date();
+    // Set time to midnight for both today and seven days ago
+    const beginningOfToday = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+    // const beginningOfSevenDaysAgo = new Date(currentDate.getTime() - 6 * 24 * 60 * 60 * 1000); // Seven days ago from midnight
+    const beginningOfSevenDaysAgo = new Date(beginningOfToday.getTime() - 6 * 24 * 60 * 60 * 1000);
+
+    // Filter tickets requested between beginningOfSevenDaysAgo and beginningOfToday
+    this.displayData = this.allTickets.filter((ticket: Ticket) => {
+      const ticketDate = new Date(ticket.requestDate);
+      return ticketDate >= beginningOfSevenDaysAgo && ticketDate <= beginningOfToday;
+    });
+    console.log('Filtered data for last 7 days:', this.displayData); // Debug statement
+    this.currentPage = 1; // Reset to the first page
+    this.updateDisplayData();
+  }
+
+//Tickets New
+  filterTicketsNew() {
+    console.log('Filtering new tickets');
+    this.allTickets = this.allTickets.filter(ticket => !ticket.viewed);
+    this.currentPage = 1; // Reset to the first page
+    // Filter tickets where viewed is false
+    // this.displayData = this.allTickets.filter(ticket => !ticket.viewed);
+    this.updateDisplayData();
+  }
 
   openTicketDetails(ticket: any): void {
     this.selectedTicket = ticket;
@@ -120,35 +174,6 @@ export class ServicehandlerComponent implements OnInit {
       newId = `SR-${i.toString().padStart(2, '0')}`;
     } while (existingIds.includes(newId));
     return newId;
-  }
-
-  toggleDropdown() {
-    const dropdownMenu = document.getElementById("dropdownMenu");
-    if (dropdownMenu) {
-      dropdownMenu.classList.toggle("show");
-    }
-  }
-
-  //Tickets for last 7 days
-  filterTicketsForLast7Days() {
-    console.log('Filtering tickets for last 7 days');
-    const currentDate = new Date();
-    // Set time to midnight for both today and seven days ago
-    const beginningOfToday = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
-    const beginningOfSevenDaysAgo = new Date(currentDate.getTime() - 6 * 24 * 60 * 60 * 1000); // Seven days ago from midnight
-
-    // Filter tickets requested between beginningOfSevenDaysAgo and beginningOfToday
-    this.displayData = this.displayData.filter((ticket: Ticket) => {
-      const ticketDate = new Date(ticket.requestDate);
-      return ticketDate >= beginningOfSevenDaysAgo && ticketDate <= beginningOfToday;
-    });
-  }
-
-//Tickets New
-  filterTicketsNew() {
-    console.log('Filtering new tickets');
-    // Filter tickets where viewed is false
-    this.displayData = this.displayData.filter(ticket => !ticket.viewed);
   }
 
   toggleProfileMenu() {
