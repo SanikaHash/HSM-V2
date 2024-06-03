@@ -63,7 +63,16 @@
           </tr>
           </tbody>
         </table>
+        <div *ngIf="displayData.length === 0">No data to display</div> <!-- Message if no data -->
       </div>
+
+      <!-- Pagination Controls -->
+      <div class="pagination-controls">
+        <button (click)="previousPage()" [disabled]="currentPage === 1">Previous</button>
+        <span>Page {{ currentPage }} of {{ getTotalPages() }}</span>
+        <button (click)="nextPage()" [disabled]="currentPage === getTotalPages()">Next</button>
+      </div>
+
       <!-- Ticket details form -->
       <app-ticket-details-form
         *ngIf="showForm"
