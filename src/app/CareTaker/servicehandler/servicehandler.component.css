@@ -174,3 +174,44 @@
   cursor: not-allowed;
 }
 
+/* servicehandler.component.css */
+
+.sidebar-options a {
+  cursor: pointer;
+}
+
+.header-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px; /* Add space between header and table */
+}
+
+.header-container h1 {
+  margin: 0 auto;
+  text-align: left;
+  flex-grow: 1;
+  padding-left: 50px; /* Add padding to align the header properly */
+}
+
+.back-arrow {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  color: #007bff; /* Blue color for the arrow */
+  text-decoration: none;
+  font-size: 24px; /* Increase the size of the arrow */
+  padding: 0;
+  margin-right: 20px; /* Add space between arrow and header text */
+  border: none; /* Remove border */
+  background: none; /* Remove background */
+  cursor: pointer; /* Cursor pointer */
+}
+
+.back-arrow:hover {
+  text-decoration: underline;
+}
+
+.back-arrow i {
+  margin-right: 5px; /* Add space between the icon and the text */
+}

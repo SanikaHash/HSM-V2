@@ -32,6 +32,9 @@ export class ServicehandlerComponent implements OnInit {
   allTickets: Ticket[]= [];
   currentPage = 1;
   itemsPerPage = 20;
+  headerTitle: string = 'All Service Requests'; // Initialize header title
+  showBackButton: boolean = false; // Initialize back button visibility
+  searchQuery: string = '';
 
   constructor(private shService: ShService, private http: HttpClient, private router: Router) { }
 
@@ -42,10 +45,6 @@ export class ServicehandlerComponent implements OnInit {
     this.fetchDisplayData();
     // this.updateDisplayData();
   }
-
-
-
-
 
   fetchDisplayData(): void {
     this.loading = true;
@@ -84,7 +83,6 @@ export class ServicehandlerComponent implements OnInit {
     }
   }
 
-
   getTotalPages() {
     return Math.ceil(this.allTickets.length / this.itemsPerPage);
   }
@@ -106,18 +104,6 @@ export class ServicehandlerComponent implements OnInit {
     });
   }
 
-
-
-
-
-
-  toggleDropdown() {
-    const dropdownMenu = document.getElementById("dropdownMenu");
-    if (dropdownMenu) {
-      dropdownMenu.classList.toggle("show");
-    }
-  }
-
   //Tickets for last 7 days
   filterTicketsForLast7Days() {
     console.log('Filtering tickets for last 7 days');
@@ -128,22 +114,25 @@ export class ServicehandlerComponent implements OnInit {
     const beginningOfSevenDaysAgo = new Date(beginningOfToday.getTime() - 6 * 24 * 60 * 60 * 1000);
 
     // Filter tickets requested between beginningOfSevenDaysAgo and beginningOfToday
-    this.displayData = this.allTickets.filter((ticket: Ticket) => {
+    const filteredTickets = this.allTickets.filter((ticket: Ticket) => {
       const ticketDate = new Date(ticket.requestDate);
       return ticketDate >= beginningOfSevenDaysAgo && ticketDate <= beginningOfToday;
     });
-    console.log('Filtered data for last 7 days:', this.displayData); // Debug statement
+    this.allTickets = filteredTickets; // Update allTickets with filtered data
+    this.headerTitle = 'Tickets for Last 7 Days';
+    this.showBackButton = true; // Show back button
     this.currentPage = 1; // Reset to the first page
     this.updateDisplayData();
+    console.log('Filtered data for last 7 days:', this.displayData);
   }
 
 //Tickets New
   filterTicketsNew() {
     console.log('Filtering new tickets');
     this.allTickets = this.allTickets.filter(ticket => !ticket.viewed);
-    this.currentPage = 1; // Reset to the first page
-    // Filter tickets where viewed is false
-    // this.displayData = this.allTickets.filter(ticket => !ticket.viewed);
+    this.headerTitle = 'New Tickets'; // Update header title
+    this.showBackButton = true; // Show back button
+    this.currentPage = 1;
     this.updateDisplayData();
   }
 
@@ -189,5 +178,16 @@ export class ServicehandlerComponent implements OnInit {
     this.showProfileMenu = false;
     // Implement your logout logic here, such as clearing user session, tokens, etc.
     this.router.navigate(['']); // Adjust the route to your login page
+  }
+
+  backToAllServiceRequests() {
+    this.fetchDisplayData(); // Refetch all tickets
+    this.headerTitle = 'All Service Requests'; // Reset header title
+    this.showBackButton = false; // Hide back button
+  }
+
+  onSearchButtonClick() {
+    console.log('Search term:', this.searchQuery);
+
   }
 }
