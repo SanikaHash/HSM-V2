@@ -6,7 +6,7 @@
     </div>
     <div class="search-bar">
       <input type="text" placeholder="Search...">
-      <button><i class="fa fa-search"></i></button>
+      <button (click)="onSearchButtonClick()"><i class="fa fa-search"></i></button>
     </div>
     <div class="profile-menu">
       <div class="profile-icon" (click)="toggleProfileMenu()">
@@ -23,6 +23,7 @@
   <div class="sidebar-main-content">
     <div class="sidebar">
       <div class="sidebar-options">
+
         <a (click)="filterTicketsForLast7Days()">Tickets for last 7 days</a>
         <a>Tickets assigned to Me</a>
         <a (click)="filterTicketsNew()">Tickets New</a>
@@ -33,6 +34,14 @@
 
     <!-- Main content -->
     <div class="main-content">
+      <!-- Header title and back button -->
+      <div class="header-container">
+        <button *ngIf="showBackButton" class="back-arrow" (click)="backToAllServiceRequests()">
+          <i class="fa fa-arrow-left"></i> <!-- FontAwesome back arrow icon -->
+        </button>
+        <h1>{{ headerTitle }}</h1>
+      </div>
+
       <!-- Your main content goes here -->
       <div class="table-container">
         <table class="table">
