@@ -5,7 +5,7 @@
       <h2>My Brand</h2>
     </div>
     <div class="search-bar">
-      <input type="text" placeholder="Search...">
+      <input type="text" [(ngModel)]="searchQuery" placeholder="Search...">
       <button (click)="onSearchButtonClick()"><i class="fa fa-search"></i></button>
     </div>
     <div class="profile-menu">
@@ -36,10 +36,10 @@
     <div class="main-content">
       <!-- Header title and back button -->
       <div class="header-container">
-        <button *ngIf="showBackButton" class="back-arrow" (click)="backToAllServiceRequests()">
+        <button *ngIf="showBackButton || isSearchActive" class="back-arrow" (click)="backToAllServiceRequests()">
           <i class="fa fa-arrow-left"></i> <!-- FontAwesome back arrow icon -->
         </button>
-        <h1>{{ headerTitle }}</h1>
+        <h1 *ngIf="!isSearchActive">{{ headerTitle }}</h1>
       </div>
 
       <!-- Your main content goes here -->
