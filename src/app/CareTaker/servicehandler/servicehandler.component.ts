@@ -35,6 +35,7 @@ export class ServicehandlerComponent implements OnInit {
   headerTitle: string = 'All Service Requests'; // Initialize header title
   showBackButton: boolean = false; // Initialize back button visibility
   searchQuery: string = '';
+  isSearchActive:boolean = false;
 
   constructor(private shService: ShService, private http: HttpClient, private router: Router) { }
 
@@ -181,13 +182,48 @@ export class ServicehandlerComponent implements OnInit {
   }
 
   backToAllServiceRequests() {
-    this.fetchDisplayData(); // Refetch all tickets
-    this.headerTitle = 'All Service Requests'; // Reset header title
-    this.showBackButton = false; // Hide back button
+    if (this.isSearchActive) {
+      this.isSearchActive = false;
+      this.searchQuery = '';
+      this.fetchDisplayData();
+    } else {
+      this.fetchDisplayData();
+      this.headerTitle = 'All Service Requests';
+      this.showBackButton = false;
+    }
   }
 
   onSearchButtonClick() {
     console.log('Search term:', this.searchQuery);
+    this.filterTicketsBySearchQuery();
+  }
 
+  // filterTicketsBySearchQuery() {
+  //   const query = this.searchQuery.trim().toLowerCase();
+  //   if (query) {
+  //     this.displayData = this.allTickets.filter(ticket => {
+  //       return Object.values(ticket).some(value =>
+  //         value.toString().toLowerCase().includes(query)
+  //       );
+  //     });
+  //   } else {
+  //     this.updateDisplayData();
+  //   }
+  //   this.currentPage = 1; // Reset to the first page
+  // }
+  filterTicketsBySearchQuery() {
+    const query = this.searchQuery.trim().toLowerCase();
+    if (query) {
+      this.displayData = this.allTickets.filter(ticket => {
+        return Object.values(ticket).some(value =>
+          value.toString().toLowerCase().includes(query)
+        );
+      });
+      this.isSearchActive = true; // Set search state to active
+    } else {
+      this.updateDisplayData();
+      this.isSearchActive = false;
+    }
+    this.currentPage = 1; // Reset to the first page
   }
 }

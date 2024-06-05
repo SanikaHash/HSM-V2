@@ -189,12 +189,17 @@
 
 .header-container h1 {
   margin: 0 auto;
-  text-align: left;
+  text-align: center;
   flex-grow: 1;
   padding-left: 50px; /* Add padding to align the header properly */
 }
 
+.table-container {
+  margin-top: 30px; /* Add margin to create space above the table */
+}
+
 .back-arrow {
+  margin-top: -10px;
   position: absolute;
   top: 10px;
   left: 0;
