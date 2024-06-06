@@ -40,9 +40,6 @@ export class ServicehandlerComponent implements OnInit {
   constructor(private shService: ShService, private http: HttpClient, private router: Router) { }
 
   ngOnInit(): void {
-    // this.getDisplayData().subscribe(data => {
-    //   this.displayData = data;
-    // });
     this.fetchDisplayData();
     // this.updateDisplayData();
   }
@@ -97,13 +94,38 @@ export class ServicehandlerComponent implements OnInit {
     return data.sort((a, b) => new Date(b.requestDate).getTime() - new Date(a.requestDate).getTime());
   }
 
+
+
+
+
   // Method to generate and assign unique request IDs
   assignUniqueRequestIds(): void {
-    const sortedAsc = [...this.displayData].sort((a, b) => new Date(a.requestDate).getTime() - new Date(b.requestDate).getTime());
+    const sortedAsc = [...this.allTickets].sort((a, b) => new Date(a.requestDate).getTime() - new Date(b.requestDate).getTime());
     sortedAsc.forEach((ticket, index) => {
       ticket.requestId = `SR-${(index + 1).toString().padStart(2, '0')}`;
     });
   }
+
+
+
+
+
+  // // Function to generate unique request IDs
+  // function generateUniqueRequestIds(tickets: Ticket[]): Ticket[] {
+  //   // Sort tickets by requestDate in ascending order
+  //   const sortedAsc = [...tickets].sort((a, b) => new Date(a.requestDate).getTime() - new Date(b.requestDate).getTime());
+  //
+  //   // Assign unique request IDs
+  //   sortedAsc.forEach((ticket, index) => {
+  //     ticket.requestId = `SR-${(index + 1).toString().padStart(2, '0')}`;
+  //   });
+  //
+  //   return sortedAsc;
+  // }
+
+
+
+
 
   //Tickets for last 7 days
   filterTicketsForLast7Days() {
@@ -198,19 +220,6 @@ export class ServicehandlerComponent implements OnInit {
     this.filterTicketsBySearchQuery();
   }
 
-  // filterTicketsBySearchQuery() {
-  //   const query = this.searchQuery.trim().toLowerCase();
-  //   if (query) {
-  //     this.displayData = this.allTickets.filter(ticket => {
-  //       return Object.values(ticket).some(value =>
-  //         value.toString().toLowerCase().includes(query)
-  //       );
-  //     });
-  //   } else {
-  //     this.updateDisplayData();
-  //   }
-  //   this.currentPage = 1; // Reset to the first page
-  // }
   filterTicketsBySearchQuery() {
     const query = this.searchQuery.trim().toLowerCase();
     if (query) {
