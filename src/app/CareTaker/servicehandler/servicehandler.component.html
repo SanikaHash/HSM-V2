@@ -58,6 +58,7 @@
             <th>Status</th>
           </tr>
           </thead>
+
           <tbody>
           <tr *ngFor="let ticket of displayData">
             <td (click)="openTicketDetails(ticket)"  class="pointer">{{ ticket.requestId }}</td>
