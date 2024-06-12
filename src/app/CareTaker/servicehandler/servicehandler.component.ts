@@ -106,10 +106,6 @@ export class ServicehandlerComponent implements OnInit {
     });
   }
 
-
-
-
-
   // // Function to generate unique request IDs
   // function generateUniqueRequestIds(tickets: Ticket[]): Ticket[] {
   //   // Sort tickets by requestDate in ascending order
@@ -122,9 +118,6 @@ export class ServicehandlerComponent implements OnInit {
   //
   //   return sortedAsc;
   // }
-
-
-
 
 
   //Tickets for last 7 days
@@ -160,8 +153,8 @@ export class ServicehandlerComponent implements OnInit {
   }
 
   openTicketDetails(ticket: any): void {
-    this.selectedTicket = ticket;
-    this.router.navigate(['/ticket-details', ticket.requestId]);
+    // this.selectedTicket = ticket;
+    this.router.navigate(['/ticket-details', ticket.requestId], { state: { ticket } });
   }
 
   closeForm(): void {
