@@ -25,9 +25,22 @@ export class TicketService {
     return this.http.post<any>(`${this.baseUrl}/addticketdetails`, requestData);
   }
 
-    getTicketDetails(ticketId: string): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/getTicketDetails/${ticketId}`);
+  //   getTicketDetails(ticketId: string): Observable<any> {
+  //   return this.http.get<any>(`${this.baseUrl}/getTicketDetails/${ticketId}`);
+  // }
+
+  getTicketDetails(id: string): void {
+    this.http.get(`http://localhost:3000/getTicketDetails/${id}`).subscribe({
+      next: (data: any) => {
+        this.ticketDetails = data;
+        this.populateForm(this.ticketDetails);
+      },
+      error: (error) => {
+        console.error('There was an error!', error);
+      }
+    });
   }
+
 
   getBookingData(bookingId: string): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/api/bookservice/${bookingId}`);
