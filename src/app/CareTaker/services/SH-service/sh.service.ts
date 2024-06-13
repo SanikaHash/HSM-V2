@@ -13,8 +13,4 @@ export class ShService {
     return this.http.get<any>('http://localhost:3000/displaydata');
   }
 
-  addticketdetails(ticketId: number, formData: any): Observable<any> {
-    return this.http.post<any>('http://localhost:3000/addticketdetails', { ticketId, formData });
-  }
-
 }
