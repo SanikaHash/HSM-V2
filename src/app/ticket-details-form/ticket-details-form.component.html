@@ -2,53 +2,73 @@
   <div class="ticket-details-form">
     <h2>Ticket Details for Ticket #{{ ticketId }}</h2>
     <form (ngSubmit)="submitForm()" [formGroup]="formData">
-      <div>
+      <div class="form-group">
         <label for="reqDate">Request Date</label>
-        <input id="reqDate" type="text" formControlName="reqDate" />
-        <div *ngIf="formData.controls['reqDate'].invalid && formData.controls['reqDate'].touched">
+        <input id="reqDate" type="date" formControlName="reqDate" class="form-control" readonly>
+        <div *ngIf="formData.get('reqDate')?.invalid && formData.get('reqDate')?.touched" class="invalid-feedback">
           Request Date is required
         </div>
       </div>
-      <div>
+      <div class="form-group">
         <label for="serviceType">Service Type</label>
-        <input id="serviceType" type="text" formControlName="serviceType" />
-        <div *ngIf="formData.controls['serviceType'].invalid && formData.controls['serviceType'].touched">
+        <input id="serviceType" type="text" formControlName="serviceType" class="form-control" readonly>
+        <div *ngIf="formData.get('serviceType')?.invalid && formData.get('serviceType')?.touched" class="invalid-feedback">
           Service Type is required
         </div>
       </div>
-      <div>
+      <div class="form-group">
         <label for="daysOpen">Number of days Open</label>
-        <input type="text" id="daysOpen" formControlName="daysOpen" readonly>
+        <input type="text" id="daysOpen" formControlName="daysOpen" class="form-control" readonly>
       </div>
-      <div>
+      <div class="form-group">
         <label for="assignedTo">Assigned To</label>
-        <input type="text" id="assignedTo" formControlName="assignedTo">
+        <select id="assignedTo" formControlName="assignedTo" class="form-control">
+          <option value="" disabled selected>Select an option</option>
+          <option value="option1">Person 1</option>
+          <option value="option2">Person 2</option>
+          <option value="option3">Person 3</option>
+          <!-- Add more options as needed -->
+        </select>
       </div>
-      <div>
+
+      <div class="form-group">
         <label for="availedDate">Availed Date</label>
-        <input type="text" id="availedDate" formControlName="availedDate">
+        <input type="date" id="availedDate" formControlName="availedDate" class="form-control">
       </div>
-      <div>
+      <div class="form-group">
         <label for="expectedTimeToClose">Expected Time to Close</label>
-        <input type="text" id="expectedTimeToClose" formControlName="expectedTimeToClose">
+        <input type="date" id="expectedTimeToClose" formControlName="expectedTimeToClose" class="form-control">
       </div>
-      <div>
+      <div class="form-group">
         <label for="severity">Severity</label>
-        <input type="text" id="severity" formControlName="severity">
+        <select id="severity" formControlName="severity" class="form-control">
+          <option value="" disabled selected>Select Severity</option>
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
       </div>
-      <div>
+      <div class="form-group">
         <label for="status">Status</label>
-        <input type="text" id="status" formControlName="status">
+        <select id="status" formControlName="status" class="form-control">
+          <option value="" disabled selected>Select Status</option>
+          <option value="open">Open</option>
+          <option value="inprogress">In Progress</option>
+          <option value="closed">Closed</option>
+        </select>
       </div>
-<!--    <div class="form-group" *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]">-->
-<!--      <label for="dummy-{{i}}">Dummy-{{i}}</label>-->
-<!--      <input type="text" id="dummy-{{i}}" formControlName="dummy-{{i}}" />-->
-<!--    </div>-->
-    <button type="submit">Submit</button>
-  </form>
-  <div *ngIf="submittedSuccessfully && ticketDetails" class="success-message">
-    Data submitted successfully!
+
+      <!--    <div class="form-group" *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]">-->
+      <!--      <label for="dummy-{{i}}">Dummy-{{i}}</label>-->
+      <!--      <input type="text" id="dummy-{{i}}" formControlName="dummy-{{i}}" />-->
+      <!--    </div>-->
+
+      <button type="submit" class="btn btn-primary">Submit</button>
+      <button type="cancel" class="btn btn-primary" (click)="cancelForm()">Cancel</button>
+    </form>
+
+    <div *ngIf="submittedSuccessfully && ticketDetails" class="alert alert-success mt-3">
+      Data submitted successfully!
+    </div>
   </div>
 </div>
-</div>
-
