@@ -40,9 +40,22 @@ export class ServicehandlerComponent implements OnInit {
   constructor(private shService: ShService, private http: HttpClient, private router: Router) { }
 
   ngOnInit(): void {
+    this.loadDisplayData();
     this.fetchDisplayData();
     // this.updateDisplayData();
   }
+
+  loadDisplayData(): void {
+    this.shService.getDisplayData().subscribe(
+      (data: any) => {
+        this.displayData = data;
+      },
+      (error: any) => {
+        console.error('Error fetching display data:', error);
+      }
+    );
+  }
+
 
   fetchDisplayData(): void {
     this.loading = true;
