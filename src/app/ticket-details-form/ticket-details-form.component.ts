@@ -13,7 +13,7 @@ export class TicketDetailsFormComponent implements OnInit {
   submittedSuccessfully= false;
   ticketDetails: any;
   ticketId: any;
-  formData: any;
+  formData!: FormGroup;
 
 
 
@@ -22,38 +22,70 @@ export class TicketDetailsFormComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder,
     private ticketService: TicketService
-  ) { }
-
-  ngOnInit() {
-    this.route.params.subscribe(params => {
-      this.ticketId = +params['id']; // Extract ticket ID from route parameters
-      this.loadTicketDetails();
-  });
-
+  ) {
+    // Initialize the form group
     this.formData = this.fb.group({
-      reqDate: [{ value: '', disabled: true }, Validators.required],
-      serviceType: [{ value: '', disabled: true }, Validators.required],
-      daysOpen: [{ value: '', disabled: true }],
+      requestId: [''],
+      reqDate: ['', Validators.required],
+      serviceType: ['', Validators.required],
       assignedTo: ['', Validators.required],
-      availedDate: ['', Validators.required],
-      expectedTimeToClose: ['', Validators.required],
+      availedDate: [''],
+      daysOpen: [''],
+      expectedTimeToClose: [''],
       severity: ['', Validators.required],
       status: ['', Validators.required]
     });
   }
 
+  ngOnInit() {
+    this.route.params.subscribe(params => {
+      console.log(params['id']); // Debugging line
+      this.ticketId = params['id']; // Extract ticket ID from route parameters
+      this.loadTicketDetails(this.ticketId);
+  });
 
-  loadTicketDetails() {
-    this.ticketService.getTicketById(this.ticketId).subscribe(
-      (data: any) => {
-        this.ticketDetails = data;
-        this.populateForm(data);
-      },
-      (error: any) => {
-        console.error('Error fetching ticket details:', error);
-      }
-    );
+
+    // this.formData = this.fb.group({
+    //   reqDate: [{ value: '', disabled: true }, Validators.required],
+    //   serviceType: [{ value: '', disabled: true }, Validators.required],
+    //   daysOpen: [{ value: '', disabled: true }],
+    //   assignedTo: ['', Validators.required],
+    //   availedDate: ['', Validators.required],
+    //   expectedTimeToClose: ['', Validators.required],
+    //   severity: ['', Validators.required],
+    //   status: ['', Validators.required]
+    // });
+
   }
+
+  loadTicketDetails(requestId: string): void {
+    this.ticketService.getTicketDetails(requestId).subscribe(data => {
+      this.formData.patchValue({
+        requestId: data.requestId,
+        reqDate: data.requestDate,
+        serviceType: data.serviceType,
+        assignedTo: data.assignedTo,
+        availedDate: data.availedDate,
+        daysOpen: data.daysOpen,
+        expectedTimeToClose: data.expectedTimeToClose,
+        severity: data.severity,
+        status: data.status
+      });
+    });
+  }
+
+
+  // loadTicketDetails() {
+  //   this.ticketService.getTicketById(this.ticketId).subscribe(
+  //     (data: any) => {
+  //       this.ticketDetails = data;
+  //       this.populateForm(data);
+  //     },
+  //     (error: any) => {
+  //       console.error('Error fetching ticket details:', error);
+  //     }
+  //   );
+  // }
 
 
   populateForm(ticket: any) {
@@ -74,24 +106,29 @@ export class TicketDetailsFormComponent implements OnInit {
     this.router.navigate(['/ticket-list']); // Adjust the route as per your application
   }
 
+  // submitForm() {
+  //   if (this.formData.valid) {
+  //     const updatedTicket = {
+  //       ...this.ticketDetails,
+  //       ...this.formData.getRawValue()
+  //     };
+  //
+  //     this.ticketService.updateTicket(updatedTicket).subscribe(
+  //       (response: any) => {
+  //         this.submittedSuccessfully = true;
+  //         setTimeout(() => {
+  //           this.router.navigate(['/ticket-list']); // Navigate back to the ticket list after submission
+  //         }, 2000);
+  //       },
+  //       (error: any) => {
+  //         console.error('Error updating ticket:', error);
+  //       }
+  //     );
+  //   }
+  // }
   submitForm() {
-    if (this.formData.valid) {
-      const updatedTicket = {
-        ...this.ticketDetails,
-        ...this.formData.getRawValue()
-      };
-
-      this.ticketService.updateTicket(updatedTicket).subscribe(
-        (response: any) => {
-          this.submittedSuccessfully = true;
-          setTimeout(() => {
-            this.router.navigate(['/ticket-list']); // Navigate back to the ticket list after submission
-          }, 2000);
-        },
-        (error: any) => {
-          console.error('Error updating ticket:', error);
-        }
-      );
-    }
+    this.ticketService.updateTicketDetails(this.ticketId, this.formData.value).subscribe(response => {
+      this.submittedSuccessfully = true;
+    });
   }
 }

@@ -6,21 +6,18 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class TicketService {
-  private baseUrl = 'http://localhost:3000'; // Your backend URL
+  private baseUrl = 'http://localhost:3000/'; // Your backend URL
 
   constructor(private http: HttpClient) {}
 
-  getDisplayData(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/displaydata`);
+  getTicketDetails(requestId: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}request/${requestId}`);
   }
 
-  getTicketById(ticketId: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/displaydata/${ticketId}`);
+  updateTicketDetails(requestId: string, data: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}request/${requestId}`, data);
   }
 
-  updateTicket(ticket: any): Observable<any> {
-    return this.http.put(`${this.baseUrl}/displaydata/${ticket.requestId}`, ticket);
-  }
 
 
 }
