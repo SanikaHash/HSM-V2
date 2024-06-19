@@ -3,8 +3,8 @@
     <h2>Ticket Details for Ticket #{{ ticketId }}</h2>
     <form (ngSubmit)="submitForm()" [formGroup]="formData">
       <div class="form-group">
-        <label for="reqDate">Request Date</label>
-        <input id="reqDate" type="date" formControlName="reqDate" class="form-control" readonly>
+        <label for="reqDate">Request Date & Time</label>
+        <input id="reqDate" type="text" formControlName="reqDate" class="form-control" readonly>
         <div *ngIf="formData.get('reqDate')?.invalid && formData.get('reqDate')?.touched" class="invalid-feedback">
           Request Date is required
         </div>
