@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { ActivatedRoute} from "@angular/router";
 import  { TicketService } from "../services/Ticket-service/ticket.service";
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -41,38 +41,34 @@ export class TicketDetailsFormComponent implements OnInit {
     this.route.params.subscribe(params => {
       console.log(params['id']); // Debugging line
       this.ticketId = params['id']; // Extract ticket ID from route parameters
+      console.log(`Loading details for ticket ID: ${this.ticketId}`); // Log the ticket ID
       this.loadTicketDetails(this.ticketId);
   });
-
-
-    // this.formData = this.fb.group({
-    //   reqDate: [{ value: '', disabled: true }, Validators.required],
-    //   serviceType: [{ value: '', disabled: true }, Validators.required],
-    //   daysOpen: [{ value: '', disabled: true }],
-    //   assignedTo: ['', Validators.required],
-    //   availedDate: ['', Validators.required],
-    //   expectedTimeToClose: ['', Validators.required],
-    //   severity: ['', Validators.required],
-    //   status: ['', Validators.required]
-    // });
-
   }
 
   loadTicketDetails(requestId: string): void {
+    console.log(`Requesting details for ticket ID: ${requestId}`); // Debugging line
     this.ticketService.getTicketDetails(requestId).subscribe(data => {
+      // Format reqDate to yyyy-MM-dd format
+      // const formattedReqDate = this.formatDate(data.requestDate);
+
       this.formData.patchValue({
-        requestId: data.requestId,
-        reqDate: data.requestDate,
-        serviceType: data.serviceType,
-        assignedTo: data.assignedTo,
-        availedDate: data.availedDate,
-        daysOpen: data.daysOpen,
-        expectedTimeToClose: data.expectedTimeToClose,
-        severity: data.severity,
-        status: data.status
+        requestId: data.requestId ||'',
+        reqDate: data.requestDate ||'',
+        serviceType: data.serviceType ||'',
+        assignedTo: data.assignedTo ||'',
+        availedDate: data.availedDate ||'',
+        daysOpen: data.daysOpen ||'',
+        expectedTimeToClose: data.expectedTimeToClose ||'',
+        severity: data.severity ||'',
+        status: data.status ||''
       });
+    }, error => {
+      console.error(`Error loading details for request ID: ${requestId}`, error); // Log errors
     });
   }
+
+
 
 
   // loadTicketDetails() {
@@ -88,18 +84,7 @@ export class TicketDetailsFormComponent implements OnInit {
   // }
 
 
-  populateForm(ticket: any) {
-    this.formData.patchValue({
-      reqDate: ticket.requestDate,
-      serviceType: ticket.serviceType,
-      daysOpen: ticket.daysOpen,
-      assignedTo: ticket.assignedTo,
-      availedDate: ticket.availedDate,
-      expectedTimeToClose: ticket.expectedTimeToClose,
-      severity: ticket.severity,
-      status: ticket.status
-    });
-  }
+
   cancelForm(): void {
     // Implement cancel logic here, if needed
     // For now, you can navigate back to the ticket list or previous page
@@ -126,9 +111,16 @@ export class TicketDetailsFormComponent implements OnInit {
   //     );
   //   }
   // }
+
   submitForm() {
-    this.ticketService.updateTicketDetails(this.ticketId, this.formData.value).subscribe(response => {
-      this.submittedSuccessfully = true;
-    });
+    if (this.formData.valid) {
+      this.ticketService.updateTicketDetails(this.ticketId, this.formData.value).subscribe(response => {
+        this.submittedSuccessfully = true;
+      });
+    }
+  }
+
+  private formatDate(requestDate: string) {
+
   }
 }
