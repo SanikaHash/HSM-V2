@@ -24,20 +24,18 @@
         <label for="assignedTo">Assigned To</label>
         <select id="assignedTo" formControlName="assignedTo" class="form-control">
           <option value="" disabled selected>Select an option</option>
-          <option value="option1">Person 1</option>
-          <option value="option2">Person 2</option>
-          <option value="option3">Person 3</option>
+          <option *ngFor="let user of users" [value]="user.id">{{ user.name }}</option>
           <!-- Add more options as needed -->
         </select>
       </div>
 
       <div class="form-group">
         <label for="availedDate">Availed Date</label>
-        <input type="date" id="availedDate" formControlName="availedDate" class="form-control">
+        <input type="date" id="availedDate" formControlName="availedDate" class="form-control" (change)="formatDate('availedDate')">
       </div>
       <div class="form-group">
         <label for="expectedTimeToClose">Expected Time to Close</label>
-        <input type="date" id="expectedTimeToClose" formControlName="expectedTimeToClose" class="form-control">
+        <input type="date" id="expectedTimeToClose" formControlName="expectedTimeToClose" class="form-control"  (change)="formatDate('expectedTimeToClose')">
       </div>
       <div class="form-group">
         <label for="severity">Severity</label>
@@ -52,7 +50,7 @@
         <label for="status">Status</label>
         <select id="status" formControlName="status" class="form-control">
           <option value="" disabled selected>Select Status</option>
-          <option value="open">Open</option>
+          <option value="open">New</option>
           <option value="inprogress">In Progress</option>
           <option value="closed">Closed</option>
         </select>
@@ -63,12 +61,14 @@
       <!--      <input type="text" id="dummy-{{i}}" formControlName="dummy-{{i}}" />-->
       <!--    </div>-->
 
-      <button type="submit" class="btn btn-primary">Submit</button>
-      <button type="cancel" class="btn btn-primary" (click)="cancelForm()">Cancel</button>
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary mr-2">Update</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelForm()">Cancel</button>
+      </div>
     </form>
 
     <div *ngIf="submittedSuccessfully && ticketDetails" class="alert alert-success mt-3">
-      Data submitted successfully!
+      Data Updated successfully!
     </div>
   </div>
 </div>

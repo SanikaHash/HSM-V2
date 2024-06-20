@@ -1,8 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import { ActivatedRoute} from "@angular/router";
 import  { TicketService } from "../services/Ticket-service/ticket.service";
+
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {Router} from "@angular/router";
+import * as moment from 'moment';
+
 
 @Component({
   selector: 'app-ticket-details-form',
@@ -14,6 +17,7 @@ export class TicketDetailsFormComponent implements OnInit {
   ticketDetails: any;
   ticketId: any;
   formData!: FormGroup;
+  users: any[] = [];  // Array to store users
 
 
 
@@ -44,17 +48,18 @@ export class TicketDetailsFormComponent implements OnInit {
       console.log(`Loading details for ticket ID: ${this.ticketId}`); // Log the ticket ID
       this.loadTicketDetails(this.ticketId);
   });
+    this.loadUsers();  // Load users when component initializes
   }
 
   loadTicketDetails(requestId: string): void {
     console.log(`Requesting details for ticket ID: ${requestId}`); // Debugging line
     this.ticketService.getTicketDetails(requestId).subscribe(data => {
-      // Format reqDate to yyyy-MM-dd format
-      // const formattedReqDate = this.formatDate(data.requestDate);
+      // Format reqDate to YYYY/MM/DD HH:mm:ss format using moment
+      const formattedReqDate = moment(data.requestDate).format('YYYY-MM-DD HH:mm:ss');
 
       this.formData.patchValue({
         requestId: data.requestId ||'',
-        reqDate: data.requestDate ||'',
+        reqDate: formattedReqDate ||'',
         serviceType: data.serviceType ||'',
         assignedTo: data.assignedTo ||'',
         availedDate: data.availedDate ||'',
@@ -68,20 +73,21 @@ export class TicketDetailsFormComponent implements OnInit {
     });
   }
 
+  loadUsers(): void {
+    this.userService.getUsers().subscribe(data => {
+      this.users = data;  // Store the user data
+    }, error => {
+      console.error('Error loading users', error);
+    });
+  }
 
-
-
-  // loadTicketDetails() {
-  //   this.ticketService.getTicketById(this.ticketId).subscribe(
-  //     (data: any) => {
-  //       this.ticketDetails = data;
-  //       this.populateForm(data);
-  //     },
-  //     (error: any) => {
-  //       console.error('Error fetching ticket details:', error);
-  //     }
-  //   );
-  // }
+  formatDate(controlName: string): void {
+    const dateValue = this.formData.get(controlName)?.value;
+    if (dateValue) {
+      const formattedDate = moment(dateValue).format('YYYY-MM-DD');
+      this.formData.patchValue({ [controlName]: formattedDate });
+    }
+  }
 
 
 
@@ -91,36 +97,8 @@ export class TicketDetailsFormComponent implements OnInit {
     this.router.navigate(['/ticket-list']); // Adjust the route as per your application
   }
 
-  // submitForm() {
-  //   if (this.formData.valid) {
-  //     const updatedTicket = {
-  //       ...this.ticketDetails,
-  //       ...this.formData.getRawValue()
-  //     };
-  //
-  //     this.ticketService.updateTicket(updatedTicket).subscribe(
-  //       (response: any) => {
-  //         this.submittedSuccessfully = true;
-  //         setTimeout(() => {
-  //           this.router.navigate(['/ticket-list']); // Navigate back to the ticket list after submission
-  //         }, 2000);
-  //       },
-  //       (error: any) => {
-  //         console.error('Error updating ticket:', error);
-  //       }
-  //     );
-  //   }
-  // }
 
   submitForm() {
-    if (this.formData.valid) {
-      this.ticketService.updateTicketDetails(this.ticketId, this.formData.value).subscribe(response => {
-        this.submittedSuccessfully = true;
-      });
-    }
-  }
-
-  private formatDate(requestDate: string) {
 
   }
 }
