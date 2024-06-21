@@ -24,7 +24,7 @@
         <label for="assignedTo">Assigned To</label>
         <select id="assignedTo" formControlName="assignedTo" class="form-control">
           <option value="" disabled selected>Select an option</option>
-          <option *ngFor="let user of users" [value]="user.id">{{ user.name }}</option>
+          <option *ngFor="let user of users" [value]="user.Name">{{ user.Name }}</option>
           <!-- Add more options as needed -->
         </select>
       </div>
@@ -49,8 +49,7 @@
       <div class="form-group">
         <label for="status">Status</label>
         <select id="status" formControlName="status" class="form-control">
-          <option value="" disabled selected>Select Status</option>
-          <option value="open">New</option>
+          <option value="new">New</option>
           <option value="inprogress">In Progress</option>
           <option value="closed">Closed</option>
         </select>

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import { ActivatedRoute} from "@angular/router";
 import  { TicketService } from "../services/Ticket-service/ticket.service";
-
+import { UserService} from "../CareTaker/services/User-service/user.service";
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {Router} from "@angular/router";
 import * as moment from 'moment';
@@ -25,7 +25,8 @@ export class TicketDetailsFormComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder,
-    private ticketService: TicketService
+    private ticketService: TicketService,
+    private userService: UserService  // Inject the UserService
   ) {
     // Initialize the form group
     this.formData = this.fb.group({
@@ -37,7 +38,7 @@ export class TicketDetailsFormComponent implements OnInit {
       daysOpen: [''],
       expectedTimeToClose: [''],
       severity: ['', Validators.required],
-      status: ['', Validators.required]
+      status: ['new', Validators.required]
     });
   }
 
@@ -56,7 +57,6 @@ export class TicketDetailsFormComponent implements OnInit {
     this.ticketService.getTicketDetails(requestId).subscribe(data => {
       // Format reqDate to YYYY/MM/DD HH:mm:ss format using moment
       const formattedReqDate = moment(data.requestDate).format('YYYY-MM-DD HH:mm:ss');
-
       this.formData.patchValue({
         requestId: data.requestId ||'',
         reqDate: formattedReqDate ||'',
@@ -66,7 +66,7 @@ export class TicketDetailsFormComponent implements OnInit {
         daysOpen: data.daysOpen ||'',
         expectedTimeToClose: data.expectedTimeToClose ||'',
         severity: data.severity ||'',
-        status: data.status ||''
+        status: data.status ||'new'
       });
     }, error => {
       console.error(`Error loading details for request ID: ${requestId}`, error); // Log errors
@@ -74,8 +74,8 @@ export class TicketDetailsFormComponent implements OnInit {
   }
 
   loadUsers(): void {
-    this.userService.getUsers().subscribe(data => {
-      this.users = data;  // Store the user data
+    this.userService.getUsers().subscribe(users => {
+      this.users = users;  // Store the user data
     }, error => {
       console.error('Error loading users', error);
     });
@@ -94,11 +94,18 @@ export class TicketDetailsFormComponent implements OnInit {
   cancelForm(): void {
     // Implement cancel logic here, if needed
     // For now, you can navigate back to the ticket list or previous page
-    this.router.navigate(['/ticket-list']); // Adjust the route as per your application
+    this.router.navigate(['/service-handler']); // Adjust the route as per your application
   }
 
 
   submitForm() {
-
+    if (this.formData.valid) {
+      const updatedData = this.formData.value;
+      this.ticketService.updateTicketDetails(this.ticketId, updatedData).subscribe(response => {
+        this.submittedSuccessfully = true;
+      }, error => {
+        console.error('Error updating ticket:', error); // Log errors
+      });
+    }
   }
 }
