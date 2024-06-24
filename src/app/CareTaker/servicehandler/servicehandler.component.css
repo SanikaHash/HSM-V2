@@ -220,3 +220,23 @@
 .back-arrow i {
   margin-right: 5px; /* Add space between the icon and the text */
 }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+/* Adjust styles for specific columns if needed */
+th:nth-child(1), td:nth-child(1) {
+  /* Styles for Request ID column */
+}
+
+th:nth-child(2), td:nth-child(2) {
+  /* Styles for Date column */
+}

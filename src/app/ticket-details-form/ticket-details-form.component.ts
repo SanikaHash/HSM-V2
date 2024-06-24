@@ -84,7 +84,7 @@ export class TicketDetailsFormComponent implements OnInit {
   formatDate(controlName: string): void {
     const dateValue = this.formData.get(controlName)?.value;
     if (dateValue) {
-      const formattedDate = moment(dateValue).format('YYYY-MM-DD');
+      const formattedDate = moment(dateValue, 'YYYY-MM-DD').format('YYYY-MM-DD');
       this.formData.patchValue({ [controlName]: formattedDate });
     }
   }
@@ -100,12 +100,20 @@ export class TicketDetailsFormComponent implements OnInit {
 
   submitForm() {
     if (this.formData.valid) {
-      const updatedData = this.formData.value;
-      this.ticketService.updateTicketDetails(this.ticketId, updatedData).subscribe(response => {
+      // Format dates before submitting
+      this.formatDate('availedDate');
+      this.formatDate('expectedTimeToClose');
+
+      console.log('Form data is valid:', this.formData.value); // Debugging statement
+      this.ticketService.updateTicketDetails(this.ticketId, this.formData.value).subscribe(response => {
+        console.log('Response from update:', response); // Debugging statement
         this.submittedSuccessfully = true;
+        this.ticketDetails = response;
       }, error => {
         console.error('Error updating ticket:', error); // Log errors
       });
+    } else {
+      console.log('Form data is invalid:', this.formData); // Debugging statement
     }
   }
 }
