@@ -64,6 +64,7 @@ export class ServicehandlerComponent implements OnInit {
         this.allTickets = this.sortByDateDesc(data);
         this.assignUniqueRequestIds();
         this.updateDisplayData();
+        this.formatDates(); // Format dates here
         this.loading = false;
       },
       error => {
@@ -71,6 +72,22 @@ export class ServicehandlerComponent implements OnInit {
         this.loading = false;
       }
     );
+  }
+
+  formatDates(): void {
+    this.allTickets.forEach(ticket => {
+      if (ticket.availedDate) {
+        ticket.availedDate = this.formatDate(ticket.availedDate);
+      }
+      if (ticket.expectedTimeToClose) {
+        ticket.expectedTimeToClose = this.formatDate(ticket.expectedTimeToClose);
+      }
+    });
+  }
+
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toISOString().split('T')[0]; // Format date as 'YYYY-MM-DD'
   }
 
   updateDisplayData() {
@@ -108,9 +125,6 @@ export class ServicehandlerComponent implements OnInit {
   }
 
 
-
-
-
   // Method to generate and assign unique request IDs
   assignUniqueRequestIds(): void {
     const sortedAsc = [...this.allTickets].sort((a, b) => new Date(a.requestDate).getTime() - new Date(b.requestDate).getTime());
@@ -119,18 +133,7 @@ export class ServicehandlerComponent implements OnInit {
     });
   }
 
-  // // Function to generate unique request IDs
-  // function generateUniqueRequestIds(tickets: Ticket[]): Ticket[] {
-  //   // Sort tickets by requestDate in ascending order
-  //   const sortedAsc = [...tickets].sort((a, b) => new Date(a.requestDate).getTime() - new Date(b.requestDate).getTime());
-  //
-  //   // Assign unique request IDs
-  //   sortedAsc.forEach((ticket, index) => {
-  //     ticket.requestId = `SR-${(index + 1).toString().padStart(2, '0')}`;
-  //   });
-  //
-  //   return sortedAsc;
-  // }
+
 
 
   //Tickets for last 7 days
@@ -172,15 +175,6 @@ export class ServicehandlerComponent implements OnInit {
 
   closeForm(): void {
     this.showForm = false;
-  }
-
-  addticketdetails(formData: any): void {
-    // Assign a unique request ID
-    formData.requestId = this.generateUniqueRequestId();
-    this.http.post('/addticketdetails', formData).subscribe(() => {
-      this.fetchDisplayData();
-      this.closeForm();
-    });
   }
 
   generateUniqueRequestId(): string {

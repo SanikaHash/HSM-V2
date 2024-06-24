@@ -52,8 +52,8 @@
             <th>Service-Type</th>
             <th>Assigned-To</th>
             <th>Availed-Date</th>
-            <th>Number of days Open</th>
-            <th>Expected Time to close</th>
+            <th>Days Open</th>
+            <th>Estimated Close</th>
             <th>Severity</th>
             <th>Status</th>
           </tr>
@@ -61,7 +61,7 @@
 
           <tbody>
           <tr *ngFor="let ticket of displayData">
-            <td (click)="openTicketDetails(ticket)"  class="pointer">{{ ticket.requestId }}</td>
+            <td (click)="openTicketDetails(ticket)"  class="pointer">{{ ticket.requestId.toString().padStart(2, '0') }}</td>
             <td>{{ (ticket.requestDate) }}</td>
             <td>{{ ticket.serviceType }}</td>
             <td>{{ ticket.assignedTo }}</td>
