@@ -109,6 +109,11 @@ export class TicketDetailsFormComponent implements OnInit {
         console.log('Response from update:', response); // Debugging statement
         this.submittedSuccessfully = true;
         this.ticketDetails = response;
+
+        // After 2 seconds, navigate back to the service handler page
+        setTimeout(() => {
+          this.router.navigate(['/service-handler']); // Replace '/service-handler' with your actual route path
+        }, 2000); // 2000 milliseconds = 2 seconds
       }, error => {
         console.error('Error updating ticket:', error); // Log errors
       });
