@@ -3,6 +3,7 @@ import { ShService} from "../services/SH-service/sh.service";
 import { HttpClient } from '@angular/common/http'; // Import HttpClient
 import {Observable} from "rxjs";
 import { Router } from '@angular/router';
+import {UserService} from "../services/User-service/user.service";
 
 // Define an interface for the ticket object
 interface Ticket {
@@ -24,25 +25,28 @@ interface Ticket {
   styleUrls: ['./servicehandler.component.css']
 })
 export class ServicehandlerComponent implements OnInit {
-  displayData: Ticket[]=[];
+  currentUser: any; // Add this property to store the current user info
+  displayData: Ticket[] = [];
   showForm: boolean = false;
   selectedTicket: any;
   loading: boolean = false;
   showProfileMenu: boolean = false;
-  allTickets: Ticket[]= [];
+  allTickets: Ticket[] = [];
   currentPage = 1;
   itemsPerPage = 20;
   headerTitle: string = 'All Service Requests'; // Initialize header title
   showBackButton: boolean = false; // Initialize back button visibility
   searchQuery: string = '';
-  isSearchActive:boolean = false;
+  isSearchActive: boolean = false;
 
-  constructor(private shService: ShService, private http: HttpClient, private router: Router) { }
+  constructor(private shService: ShService, private http: HttpClient, private router: Router, private userService: UserService) {
+  }
 
   ngOnInit(): void {
     this.loadDisplayData();
     this.fetchDisplayData();
     // this.updateDisplayData();
+    // this.currentUser = this.userService.getCurrentUser();
   }
 
   loadDisplayData(): void {
@@ -134,8 +138,6 @@ export class ServicehandlerComponent implements OnInit {
   }
 
 
-
-
   //Tickets for last 7 days
   filterTicketsForLast7Days() {
     console.log('Filtering tickets for last 7 days');
@@ -159,34 +161,64 @@ export class ServicehandlerComponent implements OnInit {
   }
 
 //Tickets New
+//   filterTicketsNew() {
+//     console.log('Filtering new tickets');
+//     this.allTickets = this.allTickets.filter(ticket => !ticket.viewed);
+//     this.headerTitle = 'New Tickets'; // Update header title
+//     this.showBackButton = true; // Show back button
+//     this.currentPage = 1;
+//     this.updateDisplayData();
+//   }
+
   filterTicketsNew() {
     console.log('Filtering new tickets');
-    this.allTickets = this.allTickets.filter(ticket => !ticket.viewed);
+    this.allTickets = this.allTickets.filter(ticket => ticket.status === 'new');
     this.headerTitle = 'New Tickets'; // Update header title
     this.showBackButton = true; // Show back button
     this.currentPage = 1;
     this.updateDisplayData();
   }
 
+
+  filterTicketsInProgress() {
+    console.log('Filtering tickets in progress');
+    this.allTickets = this.allTickets.filter(ticket => ticket.status === 'In Progress');
+    this.headerTitle = 'Tickets In Progress'; // Update header title
+    this.showBackButton = true; // Show back button
+    this.currentPage = 1;
+    this.updateDisplayData();
+  }
+
+
+  // filterTicketsAssignedToMe() {
+  //   console.log('Filtering tickets assigned to me');
+  //   this.allTickets = this.allTickets.filter(ticket => ticket.assignedTo === this.currentUser);
+  //   this.headerTitle = 'Tickets Assigned to Me'; // Update header title
+  //   this.showBackButton = true; // Show back button
+  //   this.currentPage = 1;
+  //   this.updateDisplayData();
+  // }
+
+  filterTicketsAssignedToMe() {
+    this.allTickets = this.allTickets.filter(ticket => ticket.assignedTo === this.currentUser.id)
+  }
+
+
   openTicketDetails(ticket: any): void {
     // this.selectedTicket = ticket;
-    this.router.navigate(['/ticket-details', ticket.requestId], { state: { ticket } });
+    this.router.navigate(['/ticket-details', ticket.requestId], {state: {ticket}});
   }
 
-  closeForm(): void {
-    this.showForm = false;
-  }
-
-  generateUniqueRequestId(): string {
-    const existingIds = this.displayData.map(ticket => ticket.requestId);
-    let newId: string;
-    let i = 0;
-    do {
-      i++;
-      newId = `SR-${i.toString().padStart(2, '0')}`;
-    } while (existingIds.includes(newId));
-    return newId;
-  }
+  // generateUniqueRequestId(): string {
+  //   const existingIds = this.displayData.map(ticket => ticket.requestId);
+  //   let newId: string;
+  //   let i = 0;
+  //   do {
+  //     i++;
+  //     newId = `SR-${i.toString().padStart(2, '0')}`;
+  //   } while (existingIds.includes(newId));
+  //   return newId;
+  // }
 
   toggleProfileMenu() {
     this.showProfileMenu = !this.showProfileMenu;
@@ -235,4 +267,6 @@ export class ServicehandlerComponent implements OnInit {
     }
     this.currentPage = 1; // Reset to the first page
   }
+
 }
+
