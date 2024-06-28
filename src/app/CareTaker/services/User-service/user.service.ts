@@ -8,8 +8,9 @@ import { Observable } from 'rxjs';
 export class UserService {
   private apiUrl = 'http://localhost:3000';    // Replace with your API URL
 
-  constructor(private http: HttpClient) { }
-
+  constructor(private http: HttpClient) {
+    // this.currentUser = { id: 'user123', name: 'John Doe' };
+  }
 
   getUsers(): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/users/assigned`);

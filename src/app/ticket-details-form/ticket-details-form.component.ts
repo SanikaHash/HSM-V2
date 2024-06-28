@@ -66,7 +66,7 @@ export class TicketDetailsFormComponent implements OnInit {
         daysOpen: data.daysOpen ||'',
         expectedTimeToClose: data.expectedTimeToClose ||'',
         severity: data.severity ||'',
-        status: data.status ||'new'
+        status: data.status ||'New'
       });
     }, error => {
       console.error(`Error loading details for request ID: ${requestId}`, error); // Log errors
